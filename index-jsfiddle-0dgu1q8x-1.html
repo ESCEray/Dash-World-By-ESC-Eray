@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dash World by ESC Eray</title>
+
+  <style>
+    
+  </style>
+
+  
+</head>
+<body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dash World by ESC Eray</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none}
+body{background:#0a0a0a;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:Arial Black,Arial,sans-serif}
+#gameWrap{width:400px;max-width:100vw;background:#00A0FF;border:4px solid #000;border-radius:10px;overflow:hidden}
+#g{display:block;width:100%;height:420px}
+button{cursor:pointer} button:active{transform:scale(0.94)}
+input{font-family:Arial Black;border:3px solid #000;border-radius:8px;padding:10px;text-align:center}
+.scrollable{overflow-y:auto;scrollbar-width:none}.scrollable::-webkit-scrollbar{display:none}
+.colorBtn{width:54px;height:38px;border:3px solid #000;border-radius:8px;box-shadow:2px 2px 0 #000}
+.levelBtn{padding:12px;background:#fff;border:3px solid #000;border-radius:10px;font-weight:900;box-shadow:4px 4px 0 #000;width:100%;text-align:left;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div id="gameWrap">
+<div id="ui" style="height:40px;background:#000;color:#fff;display:none;align-items:center;justify-content:space-between;padding:0 10px;font-size:10px;font-weight:900">
+<span id="lname">1. COSMIC RUSH - 0%</span>
+<div style="display:flex;gap:6px;align-items:center">
+<span id="playerNameUI" style="color:#ff0">YOU</span>
+<span id="playerIdUI" style="color:#0ff;font-size:8px">GD-000000</span>
+<span id="modeTxt" style="background:#0ff;color:#000;padding:3px 7px;border-radius:5px;font-size:9px">CUBE</span>
+<button onclick="toggleMusic()" id="musicBtn" style="background:#fff;color:#000;border:2px solid #000;border-radius:5px;padding:3px 7px;font-size:9px;font-weight:900">🔊 ON</button>
+</div>
+</div>
+<canvas id="g" width="400" height="420"></canvas>
+</div>
+
+<div id="menu" class="scrollable" style="position:fixed;inset:0;background:linear-gradient(180deg,#00A0FF 0%,#0066CC 100%);display:flex;flex-direction:column;align-items:center;z-index:100;padding:24px 0 40px">
+<h1 style="color:#fff;font-size:32px;-webkit-text-stroke:3px #000;text-shadow:5px 5px 0 #000;margin-top:30px;text-align:center;line-height:1.1">DASH WORLD<br><span style="font-size:18px;color:#ff0">BY ESC ERAY</span></h1>
+<p style="font-size:10px;background:#0f0;color:#000;padding:5px 12px;border:3px solid #000;border-radius:20px;margin:8px 0;font-weight:900">FIXED COLLISION • CUBE ONLY • CHEF'S KISS</p>
+
+<div style="background:#fff;border:4px solid #000;border-radius:12px;padding:12px;margin:10px 0;width:310px;text-align:center;box-shadow:4px 4px 0 #000">
+<p style="font-size:10px;font-weight:900;margin-bottom:6px">YOU START AS YOU WITH FRESH ID!</p>
+<p id="ownIdText" style="font-size:11px;background:#000;color:#0ff;padding:6px 10px;border-radius:6px;margin:6px 0;font-weight:900">GD-000000 - YOU</p>
+<div style="display:flex;gap:6px;justify-content:center;margin:6px 0">
+<input id="nameInputMenu" type="text" maxlength="12" placeholder="YOU" style="width:140px;margin:0;font-size:12px">
+<button onclick="saveNameMenu()" style="padding:6px 10px;background:#0f0;color:#000;border:3px solid #000;border-radius:6px;font-weight:900;font-size:10px">SAVE</button>
+</div>
+<button onclick="generateNewId()" style="padding:8px 14px;background:#ff0;color:#000;border:3px solid #000;border-radius:6px;font-weight:900;font-size:10px;margin-top:6px">🎲 NEW DIFFERENT ID!</button>
+</div>
+
+<canvas id="preview" width="64" height="64" style="width:64px;height:64px;background:#fff;border:3px solid #000;border-radius:10px;box-shadow:3px 3px 0 #000;margin:10px 0;display:block"></canvas>
+<div style="display:flex;gap:10px;margin:14px 0">
+<button onclick="openAll()" style="padding:16px 30px;background:#0f0;color:#000;border:4px solid #000;border-radius:10px;font-weight:900;font-size:16px;box-shadow:5px 5px 0 #000">▶ PLAY</button>
+<button onclick="openIcon()" style="padding:16px 22px;background:#ff0;color:#000;border:4px solid #000;border-radius:10px;font-weight:900;font-size:16px;box-shadow:5px 5px 0 #000">🎨 ICON</button>
+</div>
+<button onclick="openFriends()" style="padding:12px 24px;background:#0ff;color:#000;border:4px solid #000;border-radius:10px;font-weight:900;box-shadow:4px 4px 0 #000;font-size:14px">👥 FRIENDS</button>
+</div>
+
+<div id="iconScreen" class="scrollable" style="position:fixed;inset:0;background:linear-gradient(180deg,#00A0FF 0%,#0066CC 100%);display:none;flex-direction:column;align-items:center;padding:20px 0 130px;z-index:101">
+<h2 style="color:#fff;-webkit-text-stroke:2px #000;font-size:28px;margin-top:10px">CUSTOMIZE</h2>
+<canvas id="preview2" width="90" height="90" style="width:90px;height:90px;background:#fff;border:4px solid #000;border-radius:12px;box-shadow:4px 4px 0 #000;margin:12px 0;display:block"></canvas>
+<input id="nameInput" type="text" maxlength="12" placeholder="YOU" style="width:200px;margin:8px 0">
+<button onclick="saveName()" style="padding:8px 18px;background:#0f0;color:#000;border:3px solid #000;border-radius:8px;font-weight:900">💾 SAVE NAME</button>
+<p id="idDisplay" style="background:#000;color:#0ff;padding:6px 14px;border-radius:8px;margin:12px 0;font-size:11px;font-weight:900">GD-000000 - YOU</p>
+<button onclick="generateNewId()" style="padding:8px 14px;background:#ff0;color:#000;border:3px solid #000;border-radius:6px;font-weight:900;font-size:11px">🎲 NEW DIFFERENT ID</button>
+<div id="colors1" style="display:grid;grid-template-columns:repeat(4,58px);gap:10px;margin:12px 0"></div>
+<div id="colors2" style="display:grid;grid-template-columns:repeat(4,58px);gap:10px;margin:8px 0"></div>
+<button onclick="closeIcon()" style="margin-top:22px;padding:14px 28px;background:#000;color:#fff;border-radius:10px;font-weight:900">⬅ BACK</button>
+</div>
+
+<div id="friendsScreen" class="scrollable" style="position:fixed;inset:0;background:linear-gradient(180deg,#7F00FF 0%,#4A00AA 100%);display:none;flex-direction:column;align-items:center;padding:20px 0 130px;z-index:102">
+<h2 style="color:#fff;-webkit-text-stroke:2px #000;font-size:28px;margin-top:10px">👥 FRIENDS</h2>
+<p id="myIdBig" style="background:#000;color:#0ff;padding:8px 16px;border-radius:8px;margin:12px 0;font-size:14px;font-weight:900">GD-000000 - YOU</p>
+<div style="display:flex;gap:8px;margin:10px 0"><input id="friendIdInput" placeholder="GD-123456" style="width:150px;text-transform:uppercase"><button onclick="addFriend()" style="padding:10px 16px;background:#0f0;color:#000;border:3px solid #000;border-radius:8px;font-weight:900">ADD</button></div>
+<div id="friendsList" style="width:370px;max-width:95%;display:flex;flex-direction:column;gap:8px;margin-top:10px"></div>
+<p id="friendsEmpty" style="color:#fff;font-size:10px;text-align:center;margin-top:20px;opacity:0.7">No friends yet</p>
+<button onclick="closeFriends()" style="margin-top:20px;padding:14px 28px;background:#000;color:#fff;border-radius:10px;font-weight:900">⬅ BACK</button>
+</div>
+
+<div id="lvl" class="scrollable" style="position:fixed;inset:0;background:linear-gradient(180deg,#00A0FF 0%,#0066CC 100%);display:none;flex-direction:column;align-items:center;padding:20px 0 130px;z-index:100">
+<h2 style="color:#fff;-webkit-text-stroke:2px #000;font-size:24px;text-align:center">DASH WORLD<br>BY ESC ERAY</h2>
+<p style="font-size:9px;background:#0f0;color:#000;padding:5px 10px;border:2px solid #000;border-radius:8px;margin:6px 0">10 CUBE LEVELS • FIXED COLLISION • CHEF'S KISS</p>
+<div id="list" style="display:flex;flex-direction:column;gap:8px;width:370px;max-width:95%;margin-top:12px"></div>
+<button onclick="closeAll()" style="margin-top:18px;padding:14px 28px;background:#000;color:#fff;border-radius:10px;font-weight:900">⬅ BACK</button>
+</div>
+
+<div id="dead" class="scrollable" style="position:fixed;inset:0;background:radial-gradient(circle at 50% 30%, #2a0a4a 0%, #0f001a 70%);display:none;flex-direction:column;align-items:center;z-index:200;padding:20px 0 70px">
+<div style="margin-top:50px;text-align:center;display:flex;flex-direction:column;align-items:center;width:100%">
+<h2 id="d1" style="font-size:80px;color:#fff;-webkit-text-stroke:3px #000;text-shadow:4px 4px 0 #000;line-height:1;margin:6px 0">0%</h2>
+<p id="d2" style="color:#fff;font-size:13px;background:#000;padding:4px 12px;border-radius:20px;border:2px solid #333"></p>
+<p id="dName" style="color:#ff0;font-size:11px;font-weight:900;margin:8px 0;background:#000;padding:4px 10px;border-radius:6px"></p>
+<p id="dId" style="color:#0ff;font-size:10px;font-weight:900;margin:2px 0;background:#000;padding:3px 8px;border-radius:5px"></p>
+<div style="display:flex;flex-direction:column;gap:12px;margin-top:22px;width:330px;max-width:90%">
+<button onclick="retry()" style="padding:18px;background:#0f0;color:#000;border:4px solid #000;border-radius:12px;font-weight:900;font-size:18px;box-shadow:6px 6px 0 #000;width:100%">🔄 RETRY</button>
+<button onclick="goToLevels()" style="padding:18px;background:#fff;color:#000;border:4px solid #000;border-radius:12px;font-weight:900;font-size:16px;box-shadow:6px 6px 0 #000;width:100%">📋 LEVELS</button>
+<button onclick="goToMenu()" style="padding:14px;background:#0ff;color:#000;border:3px solid #000;border-radius:10px;font-weight:900;width:100%">🏠 MENU</button>
+</div>
+</div>
+</div>
+
+<script>
+"use strict";
+const C=document.getElementById('g'), X=C.getContext('2d');
+const PREV=document.getElementById('preview'), PX=PREV.getContext('2d');
+const PREV2=document.getElementById('preview2'), PX2=PREV2.getContext('2d');
+
+let state='menu', lvl='cosmic', hold=false, cam=0, camY=0, targetCamY=0, targetCamX=0, endX=6000, speed=3.3;
+let player=null, objs=[];
+let iconCol='#00ffff', iconCol2='#ff0000';
+let playerName='YOU', ownId='', bestScores={}, friends=[];
+
+let audioCtx=null, musicOn=true, musicTimer=null, masterGain=null;
+const TRACKS={cosmic:[261,329,392,523], neon:[330,392,440,523], polar:[220,277,330,392], desert:[196,247,294,370], forest:[174,220,262,330], volcano:[150,180,220,270], sky:[330,440,550,659], galaxy:[200,250,300,400], factory:[180,220,270,330], finale:[320,400,500,640]};
+function initAudio(){ if(!audioCtx){ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); masterGain=audioCtx.createGain(); masterGain.gain.value=0.22; masterGain.connect(audioCtx.destination); } if(audioCtx.state==='suspended') audioCtx.resume(); }
+function playNote(f,d=0.26,t='square',v=0.22){ if(!audioCtx||!musicOn||!masterGain) return; try{const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type=t; o.frequency.value=f; g.gain.setValueAtTime(v,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d); o.connect(g); g.connect(masterGain); o.start(); o.stop(audioCtx.currentTime+d);}catch(e){} }
+function playMusicFor(id){ if(!musicOn) return; initAudio(); stopMusic(); const notes=TRACKS[id]||TRACKS.cosmic; let i=0; musicTimer=setInterval(()=>{ if(!musicOn||!audioCtx) return; playNote(notes[i%notes.length],0.28); i++; }, 210); }
+function stopMusic(){ if(musicTimer){ clearInterval(musicTimer); musicTimer=null; } }
+window.toggleMusic=()=>{ initAudio(); musicOn=!musicOn; document.getElementById('musicBtn').textContent=musicOn?'🔊 ON':'🔇 OFF'; if(musicOn){ if(state==='play') playMusicFor(lvl); } else stopMusic(); };
+
+function generateUniqueId(){
+  const now = Date.now();
+  const rand1 = Math.floor(Math.random()*999999);
+  const combined = (now + rand1).toString();
+  return 'GD-'+combined.slice(-6).padStart(6,'0');
+}
+function saveData(){try{localStorage.setItem('gd_icon',iconCol);localStorage.setItem('gd_icon2',iconCol2);localStorage.setItem('gd_best',JSON.stringify(bestScores));localStorage.setItem('gd_friends',JSON.stringify(friends));}catch(e){}}
+function loadData(){
+  playerName='YOU'; ownId=generateUniqueId();
+  try{
+    const a=localStorage.getItem('gd_icon');if(a)iconCol=a;
+    const b=localStorage.getItem('gd_icon2');if(b)iconCol2=b;
+    const bs=localStorage.getItem('gd_best');if(bs)bestScores=JSON.parse(bs);
+    const f=localStorage.getItem('gd_friends');if(f)friends=JSON.parse(f);
+  }catch(e){}
+}
+loadData();
+window.generateNewId=()=>{ ownId=generateUniqueId(); playerName='YOU'; drawIconPreview(); renderFriends(); };
+window.hardReset=()=>{ try{localStorage.clear();}catch(e){} ownId=generateUniqueId(); playerName='YOU'; bestScores={}; friends=[]; iconCol='#00ffff'; iconCol2='#ff0000'; drawIconPreview(); buildList(); renderFriends(); };
+
+const ICON_COLORS=['#00ffff','#ff0000','#ffff00','#00ff00','#ff00ff','#ff8800','#ffffff','#000000','#0088ff','#ff88ff'];
+function buildColors(){
+  const c1=document.getElementById('colors1'), c2=document.getElementById('colors2');
+  if(!c1||!c2) return; c1.innerHTML=''; c2.innerHTML='';
+  ICON_COLORS.forEach(col=>{const b=document.createElement('button'); b.className='colorBtn'; b.style.background=col; b.onclick=()=>{iconCol=col; saveData(); drawIconPreview();}; c1.appendChild(b);});
+  ICON_COLORS.forEach(col=>{const b=document.createElement('button'); b.className='colorBtn'; b.style.background=col; b.onclick=()=>{iconCol2=col; saveData(); drawIconPreview();}; c2.appendChild(b);});
+}
+function drawIconPreview(){
+  [PX,PX2].forEach(ctx=>{
+    if(!ctx) return; ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+    const cx=ctx.canvas.width/2, cy=ctx.canvas.height/2;
+    ctx.fillStyle='#000'; ctx.fillRect(cx-21,cy-19,42,42);
+    ctx.fillStyle=iconCol; ctx.fillRect(cx-18,cy-18,36,36);
+    ctx.fillStyle=iconCol2; ctx.fillRect(cx-18,cy-18,36,8);
+    ctx.fillStyle='#000'; ctx.fillRect(cx-11,cy-2,6,6); ctx.fillRect(cx+5,cy-2,6,6);
+  });
+  document.getElementById('ownIdText').textContent=ownId+' - '+playerName;
+  document.getElementById('idDisplay').textContent=ownId+' - '+playerName;
+  document.getElementById('myIdBig').textContent=ownId+' - '+playerName;
+  document.getElementById('playerNameUI').textContent=playerName;
+  document.getElementById('playerIdUI').textContent=ownId;
+  document.getElementById('nameInput').value=playerName;
+  document.getElementById('nameInputMenu').value=playerName;
+}
+window.saveName=()=>{const v=document.getElementById('nameInput').value.trim().toUpperCase().slice(0,12); if(v){playerName=v; drawIconPreview();}};
+window.saveNameMenu=()=>{const v=document.getElementById('nameInputMenu').value.trim().toUpperCase().slice(0,12); if(v){playerName=v; drawIconPreview();}};
+
+const LEVELS=[
+{id:'cosmic',name:'1. COSMIC RUSH',bg:'#00A0FF',g:'#0066CC',desc:'Easy - Single spikes & blocks'},
+{id:'neon',name:'2. NEON PULSE',bg:'#0099FF',g:'#0055AA',desc:'Easy - Double spikes max'},
+{id:'polar',name:'3. POLAR DRIFT',bg:'#4A2CFF',g:'#2A1A88',desc:'Normal - Gaps & jumps'},
+{id:'desert',name:'4. DESERT STORM',bg:'#FF9C00',g:'#CC6A00',desc:'Normal - Orbs & pads'},
+{id:'forest',name:'5. FOREST RUN',bg:'#00FF88',g:'#00AA66',desc:'Hard - Platforms'},
+{id:'volcano',name:'6. VOLCANO ESCAPE',bg:'#FF3366',g:'#AA2244',desc:'Hard - Long jumps'},
+{id:'sky',name:'7. SKY JUMPER',bg:'#FF44CC',g:'#AA2288',desc:'Harder - Timing'},
+{id:'galaxy',name:'8. GALAXY VOYAGE',bg:'#88FF44',g:'#66AA22',desc:'Harder - Mixed'},
+{id:'factory',name:'9. FACTORY LOOP',bg:'#FFAA00',g:'#CC8800',desc:'Insane - Tight'},
+{id:'finale',name:'10. FINAL HORIZON',bg:'#FFFFFF',g:'#AAAAAA',desc:'Insane - ESC Eray Boss'}
+];
+function buildList(){
+  const L=document.getElementById('list'); if(!L) return; L.innerHTML='';
+  LEVELS.forEach(l=>{
+    const best=bestScores[l.id]||0;
+    const b=document.createElement('button'); b.className='levelBtn';
+    b.style.background=l.bg; b.style.color='#000';
+    b.innerHTML=`<div style="display:flex;justify-content:space-between"><div><div style="font-size:11px">${l.name}</div><div style="font-size:7px;opacity:0.8">${l.desc}</div></div><div style="font-size:10px;background:#000;color:#fff;padding:4px 8px;border-radius:6px">${best}%</div></div>`;
+    b.onclick=()=>start(l.id); L.appendChild(b);
+  });
+}
+function renderFriends(){
+  const cont=document.getElementById('friendsList'); const empty=document.getElementById('friendsEmpty');
+  if(!cont) return; cont.innerHTML='';
+  if(friends.length===0){ if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
+  friends.forEach(fr=>{
+    const div=document.createElement('div');
+    div.style.cssText=`background:#fff;border:3px solid #000;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center;box-shadow:3px 3px 0 #000`;
+    div.innerHTML=`<div><div style="font-size:12px;font-weight:900">${fr.name}</div><div style="font-size:9px;color:#00f;font-weight:900">${fr.id}</div></div><button onclick="removeFriend('${fr.id}')" style="background:#f00;color:#fff;border:2px solid #000;border-radius:6px;padding:6px 10px;font-weight:900">X</button>`;
+    cont.appendChild(div);
+  });
+}
+window.addFriend=()=>{
+  const input=document.getElementById('friendIdInput'); if(!input) return;
+  let id=input.value.trim().toUpperCase(); if(!id) return;
+  if(!id.startsWith('GD-')) id='GD-'+id.replace(/[^0-9]/g,'').slice(-6).padStart(6,'0');
+  if(!/^GD-\d{6}$/.test(id)){ alert('Format must be GD-123456!'); return; }
+  if(id===ownId){ alert('That is YOU!'); return; }
+  if(friends.find(f=>f.id===id)){ alert('Already added!'); return; }
+  friends.push({id,name:'YOU',best:{cosmic:50}}); saveData(); renderFriends(); input.value='';
+};
+window.removeFriend=(id)=>{ friends=friends.filter(f=>f.id!==id); saveData(); renderFriends(); };
+
+function makeLevelFor(id){
+  const G=354; let x=900; const A=[];
+  const block=(h,gap=190)=>{A.push({x,y:G-h,w:44,h,t:'block'}); x+=44+gap;};
+  const spike=(gap=190)=>{A.push({x,y:G-28,w:28,h:28,t:'spike'}); x+=28+gap;};
+  const spike2=(gap=170)=>{A.push({x,y:G-28,w:28,h:28,t:'spike'}); A.push({x:x+20,y:G-28,w:28,h:28,t:'spike'}); x+=68+gap;};
+  const orb=(y=300,gap=220)=>{A.push({x,y,w:26,h:26,t:'orb'}); x+=26+gap;};
+  const pad=(gap=220)=>{A.push({x,y:G-14,w:36,h:14,t:'pad'}); x+=36+gap;};
+
+  if(id==='cosmic'){ block(32); spike(); block(36,210); spike(210); block(32,220); orb(300,230); block(40,210); spike(210); block(34); }
+  else if(id==='neon'){ block(32); spike(); spike(200); block(34,200); spike2(200); block(36,200); spike(200); block(32); }
+  else if(id==='polar'){ block(32,170); spike(170); block(32,170); spike(170); block(36,180); orb(280,200); block(32,180); spike(180); block(38,180); spike(180); }
+  else if(id==='desert'){ block(32); spike(180); block(36,180); pad(200); block(32,180); spike2(180); block(40,200); orb(290,200); block(32); }
+  else if(id==='forest'){ block(40,160); block(50,170); block(32,160); spike(160); block(45,170); block(32,160); spike2(160); block(38,170); block(42,160); }
+  else if(id==='volcano'){ block(32,180); spike(180); block(32,200); spike(200); block(36,220); spike(220); block(32,180); orb(270,200); block(50,200); }
+  else if(id==='sky'){ block(32,170); orb(260,180); block(36,170); orb(280,180); block(32,170); pad(180); block(40,170); spike(170); block(32,170); orb(250,180); }
+  else if(id==='galaxy'){ block(32,180); spike(180); block(36,180); spike2(180); block(32,180); orb(300,200); block(40,180); spike(180); block(34,180); pad(180); block(32); }
+  else if(id==='factory'){ block(32,160); spike(160); block(34,160); spike2(160); block(36,160); orb(290,170); block(32,160); block(40,160); spike(160); block(32,160); pad(160); block(38); }
+  else if(id==='finale'){ block(32,170); spike(170); block(36,170); spike2(170); block(40,180); orb(280,190); block(32,180); spike(180); block(45,180); spike2(180); block(50,190); orb(260,190); block(60,190); spike(190); block(32); }
+  x+=1200; return A;
+}
+
+function reset(){
+  player={x:85,y:326,w:20,h:20,vy:0,rot:0,ground:true,wx:0,py:326};
+  cam=0; camY=0; targetCamY=0; targetCamX=0;
+  objs=makeLevelFor(lvl);
+  endX=objs[objs.length-1].x+800;
+  const info=LEVELS.find(l=>l.id===lvl);
+  if(info){ C.style.background=info.bg; document.getElementById('lname').textContent=info.name+' - 0%'; }
+  document.getElementById('modeTxt').textContent='CUBE';
+  speed=3.3;
+  if(musicOn) playMusicFor(lvl);
+}
+function die(r){
+  const pct=Math.min(100,Math.floor((cam/endX)*100));
+  if(!bestScores[lvl]||pct>bestScores[lvl]){bestScores[lvl]=pct; saveData(); buildList();}
+  state='dead'; document.getElementById('dead').style.display='flex';
+  document.getElementById('d1').textContent=pct+'%'; document.getElementById('d2').textContent='CUBE • '+r;
+  document.getElementById('dName').textContent=playerName; document.getElementById('dId').textContent=ownId;
+  stopMusic();
+}
+function win(){
+  bestScores[lvl]=100; saveData(); buildList();
+  state='dead'; document.getElementById('dead').style.display='flex';
+  document.getElementById('d1').textContent='100%'; document.getElementById('d2').textContent='🎉 COMPLETE! BY ESC ERAY 🎉';
+  document.getElementById('dName').textContent=playerName; document.getElementById('dId').textContent=ownId;
+  stopMusic();
+}
+
+function update(){
+ if(state!=='play'||!player) return;
+ player.wx += speed;
+ player.py = player.y; // save previous Y for swept collision
+ targetCamX = player.wx - 85;
+ cam += (targetCamX - cam) * 0.18;
+ if(player.ground){ targetCamY = 0; camY += (targetCamY - camY) * 0.15; }
+ else { if(player.y < 200){ targetCamY = player.y - 280; camY += (targetCamY - camY) * 0.08; } }
+ camY = Math.max(-90, Math.min(90, camY));
+ const info=LEVELS.find(l=>l.id===lvl);
+ const pct=Math.min(100,Math.floor((cam/endX)*100));
+ const ln=document.getElementById('lname'); if(ln&&info) ln.textContent=info.name+' - '+pct+'%';
+
+ player.vy+=0.92; player.y+=player.vy;
+ if(player.y>=326){player.y=326; player.vy=0; player.ground=true; player.rot=0;}
+ else {player.ground=false; player.rot+=0.32;}
+
+ for(let i=0;i<objs.length;i++){
+  const o=objs[i];
+  o.dx=o.x-cam; o.dy=o.y-camY;
+  if(o.dx<-160||o.dx>500) continue;
+  if(o.t==='orb'){
+    if(player.x+16>o.dx&&player.x<o.dx+26&&player.y+16>o.dy&&player.y<o.dy+26&&hold){
+      player.vy=-14.5; player.ground=false; o.x=-999999; continue;
+    } continue;
+  }
+  if(o.t==='pad'){ if(player.x+16>o.dx&&player.x<o.dx+36&&player.y+16>o.dy){player.vy=-18; player.ground=false;} continue; }
+
+  // IMPROVED COLLISION - CHEF'S KISS
+  if(o.t==='block'){
+    const blockLeft = o.dx+2;
+    const blockRight = o.dx+o.w-2;
+    const blockTop = o.dy;
+    const blockBottom = o.dy+o.h;
+
+    const playerLeft = player.x+6;
+    const playerRight = player.x+14;
+    const playerTop = player.y+2;
+    const playerBottom = player.y+18;
+    const prevBottom = player.py+18;
+
+    // Check horizontal overlap first
+    if(playerRight > blockLeft && playerLeft < blockRight){
+      // SWEPT TOP COLLISION - land even if fell through fast
+      if(player.vy >= 0 && prevBottom <= blockTop+8 && playerBottom >= blockTop){
+        if(playerBottom <= blockTop+18){ // top 18px is safe landing
+          player.y = blockTop - 20 + camY; // convert back? No, o.dy already includes camY
+          // Actually o.dy = o.y - camY, player.y is world without camY? Let's fix:
+          // player.y is world Y, o.dy = o.y - camY, so blockTop world = o.y
+          // So landing: player.y = o.y - 20
+          player.y = o.y - 20;
+          player.vy=0; player.ground=true; player.rot=0;
+          continue;
+        }
+      }
+      // SIDE / BOTTOM COLLISION - only if not landing on top
+      if(playerBottom > blockTop+12 && playerTop < blockBottom-2){
+        if(playerLeft < blockRight-6 && playerRight > blockLeft+6){
+          // small forgiving: if feet are just above top, don't die
+          if(playerBottom < blockTop+20 && player.vy>=0) {
+            player.y = o.y - 20;
+            player.vy=0; player.ground=true; player.rot=0;
+            continue;
+          }
+          die('block'); return;
+        }
+      }
+    }
+  } else if(o.t==='spike'){
+    // SPIKE - small forgiving hitbox, but only bottom part kills
+    const sx = o.dx+10, sy = o.dy+10, sw = o.w-20, sh = o.h-10;
+    const px = player.x+7, py = player.y+7, pw=6, ph=6;
+    if(px+pw>sx && px<sx+sw && py+ph>sy && py<sy+sh){die('spike'); return;}
+  }
+ }
+ if(cam>endX-380) win();
+}
+
+function draw(){
+ const info=LEVELS.find(l=>l.id===lvl); const bg=info?info.bg:'#00A0FF'; const gcol=info?info.g:'#0066CC';
+ X.fillStyle=bg; X.fillRect(0,0,400,420);
+ X.fillStyle=gcol; X.fillRect(0,354-camY,400,80+Math.abs(camY));
+ X.fillStyle='#000'; X.fillRect(0,354-camY,400,6); X.fillRect(0,0-camY,400,6);
+ for(let i=0;i<objs.length;i++){
+  const o=objs[i]; const dx=o.dx; const dy=o.dy; if(dx===undefined||dx<-90||dx>500) continue;
+  if(o.t==='spike'){
+    X.fillStyle='#ff0000'; X.strokeStyle='#000'; X.lineWidth=4;
+    X.beginPath(); X.moveTo(dx,dy+o.h); X.lineTo(dx+o.w/2,dy); X.lineTo(dx+o.w,dy+o.h); X.closePath(); X.fill(); X.stroke();
+  } else if(o.t==='block'){
+    X.fillStyle='#000'; X.fillRect(dx-1,dy-1,o.w+2,o.h+2);
+    X.fillStyle='#ffe100'; X.fillRect(dx+3,dy+3,o.w-6,o.h-6);
+    // top highlight to show safe landing
+    X.fillStyle='#ffffaa'; X.fillRect(dx+3,dy+3,o.w-6,4);
+  } else if(o.t==='orb'){
+    X.fillStyle='#000'; X.beginPath(); X.arc(dx+13,dy+13,18,0,6.283); X.fill();
+    X.fillStyle='#ffe100'; X.beginPath(); X.arc(dx+13,dy+13,14,0,6.283); X.fill();
+  } else if(o.t==='pad'){
+    X.fillStyle='#000'; X.fillRect(dx-1,dy-1,o.w+2,o.h+2);
+    X.fillStyle='#ffe100'; X.fillRect(dx+3,dy+3,o.w-6,o.h-6);
+  }
+ }
+ if(player){
+  X.save(); X.translate(player.x+10,player.y+10-camY); X.rotate(player.rot);
+  X.fillStyle='#000'; X.fillRect(-13,-13,26,26);
+  X.fillStyle=iconCol; X.fillRect(-10,-10,20,20);
+  X.fillStyle=iconCol2; X.fillRect(-10,-10,20,7);
+  X.restore();
+  X.fillStyle='#fff'; X.strokeStyle='#000'; X.lineWidth=2.5; X.font='bold 9px Arial Black'; X.textAlign='center';
+  X.strokeText(playerName, player.x+10, player.y-14-camY); X.fillText(playerName, player.x+10, player.y-14-camY);
+  X.font='bold 7px Arial'; X.fillStyle='#0ff'; X.strokeText(ownId, player.x+10, player.y-24-camY); X.fillText(ownId, player.x+10, player.y-24-camY);
+  const prog=Math.min(100,Math.floor((cam/endX)*100));
+  X.fillStyle='rgba(0,0,0,0.6)'; X.fillRect(0,0,400,4); X.fillStyle='#0f0'; X.fillRect(0,0,400*(prog/100),4);
+ }
+}
+
+window.openFriends=()=>{ initAudio(); document.getElementById('menu').style.display='none'; document.getElementById('friendsScreen').style.display='flex'; renderFriends(); };
+window.closeFriends=()=>{ document.getElementById('friendsScreen').style.display='none'; document.getElementById('menu').style.display='flex'; };
+window.openAll=()=>{initAudio(); document.getElementById('menu').style.display='none'; document.getElementById('lvl').style.display='flex'; buildList();};
+window.closeAll=()=>{document.getElementById('lvl').style.display='none'; document.getElementById('menu').style.display='flex';};
+window.openIcon=()=>{initAudio(); document.getElementById('menu').style.display='none'; document.getElementById('iconScreen').style.display='flex'; buildColors(); drawIconPreview();};
+window.closeIcon=()=>{document.getElementById('iconScreen').style.display='none'; document.getElementById('menu').style.display='flex'; drawIconPreview();};
+window.start=(n)=>{initAudio(); lvl=n; ['lvl','menu','iconScreen','friendsScreen','dead'].forEach(id=>{const el=document.getElementById(id); if(el) el.style.display='none';}); document.getElementById('ui').style.display='flex'; reset(); state='play';};
+window.retry=()=>{initAudio(); document.getElementById('dead').style.display='none'; reset(); state='play';};
+window.goToLevels=()=>{stopMusic(); document.getElementById('dead').style.display='none'; document.getElementById('lvl').style.display='flex'; document.getElementById('ui').style.display='none'; state='menu'; buildList();};
+window.goToMenu=()=>{stopMusic(); ['dead','lvl','friendsScreen'].forEach(id=>{const el=document.getElementById(id); if(el) el.style.display='none';}); document.getElementById('menu').style.display='flex'; document.getElementById('ui').style.display='none'; state='menu';};
+
+function handleDown(e){if(e.cancelable) e.preventDefault(); initAudio(); hold=true; if(state==='play'){ if(player&&player.ground){ player.vy=-13.5; player.ground=false; player.y-=2; } } if(state==='dead') retry();}
+function handleUp(e){if(e.cancelable) e.preventDefault(); hold=false;}
+C.addEventListener('pointerdown',handleDown,{passive:false}); C.addEventListener('pointerup',handleUp,{passive:false});
+C.addEventListener('touchstart',handleDown,{passive:false}); C.addEventListener('touchend',handleUp,{passive:false});
+C.addEventListener('mousedown',handleDown); C.addEventListener('mouseup',handleUp);
+window.addEventListener('keydown',e=>{if(e.code==='Space'){initAudio(); handleDown(e); e.preventDefault();}});
+window.addEventListener('keyup',e=>{if(e.code==='Space') handleUp(e);});
+
+try{
+  buildColors(); drawIconPreview(); buildList(); renderFriends(); reset();
+  (function loop(){ try{update(); draw();}catch(err){} requestAnimationFrame(loop); })();
+}catch(err){ console.error(err); }
+</script>
+</body>
+</html>
+
+  <script>
+    
+  </script>
+</body>
+</html>
